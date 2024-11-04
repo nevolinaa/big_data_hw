@@ -1,0 +1,454 @@
+# Instructions for homework №1-3
+
+```bash
+git clone git@github.com:nevolinaa/big_data_hw.git
+cd big_data_hw
+ssh -o "IdentitiesOnly=yes" -i ./ssh/id_rsa team@176.109.91.17
+
+**wherever we don't specify what information to enter, just press enter or ‘yes’**
+
+## Part 1: hadoop
+sudo adduser hadoop
+*password: 123456780*
+*full name: hadoop*
+
+sudo -i -u hadoop
+
+ssh-keygen 
+cat .ssh/id_ed25519.pub
+
+*copy key include ssh-ed25519 and exclude hadoop@team-15-jn*
+
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+
+exit
+
+sudo vim /etc/hosts
+
+*comment all and put this to the file:*
+*192.168.1.62 team-15-jn*
+*192.168.1.63 team-15-nn*
+*192.168.1.64 team-15-dn-0*
+*192.168.1.65 team-15-dn-1*
+
+ssh team-15-nn
+
+*repeat:*
+sudo adduser hadoop
+*password: 123456780*
+*full name: hadoop*
+
+sudo -i -u hadoop
+
+ssh-keygen
+cat .ssh/id_ed25519.pub
+
+*copy key include ssh-ed25519 and exclude hadoop@team-15-nn*
+
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+
+exit
+
+sudo vim /etc/hosts
+
+*comment all and put this to the file:*
+*192.168.1.62 team-15-jn*
+*192.168.1.63 team-15-nn*
+*192.168.1.64 team-15-dn-0*
+*192.168.1.65 team-15-dn-1*
+
+exit
+
+ssh team-15-dn-0
+
+*repeat:*
+sudo adduser hadoop
+*password: 123456780*
+*full name: hadoop*
+
+sudo -i -u hadoop
+
+ssh-keygen
+cat .ssh/id_ed25519.pub
+
+*copy key include ssh-ed25519 and exclude hadoop@team-15-dn-00*
+
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+
+exit
+
+sudo vim /etc/hosts
+
+*comment all and put this to the file:*
+*192.168.1.62 team-15-jn*
+*192.168.1.63 team-15-nn*
+*192.168.1.64 team-15-dn-0*
+*192.168.1.65 team-15-dn-1*
+
+exit
+
+ssh team-15-dn-1
+
+*repeat:* 
+sudo adduser hadoop
+*password: 123456780*
+*full name: hadoop*
+
+sudo -i -u hadoop
+
+ssh-keygen
+cat .ssh/id_ed25519.pub
+
+*copy key include ssh-ed25519 and exclude hadoop@team-15-dn-01*
+
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+
+exit
+
+sudo -i -u hadoop 
+vim .ssh/authorized_keys
+
+*put your keys to this file. you should have smth like:*
+*ssh-ed25519 key-jn*
+*ssh-ed25519 key-nn*
+*ssh-ed25519 key-dn-0*
+*ssh-ed25519 key-dn-1*
+
+ssh team-15-nn 
+cd /home/hadoop/.ssh/ 
+wget -O authorized_keys https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/.ssh/authorized_keys
+cd ..
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+tar -xvzf hadoop-3.4.0.tar.gz
+exit
+(you should exit from node, not hadoop user. if needed, do sudo -i -u hadoop again)
+
+ssh team-15-dn-0
+cd /home/hadoop/.ssh/ 
+wget -O authorized_keys https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/.ssh/authorized_keys
+cd ..
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+tar -xvzf hadoop-3.4.0.tar.gz
+exit
+(you should exit from node, not hadoop user. if needed, do sudo -i -u hadoop again)
+
+ssh team-15-dn-1
+cd /home/hadoop/.ssh/ 
+wget -O authorized_keys https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/.ssh/authorized_keys
+cd ..
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz
+tar -xvzf hadoop-3.4.0.tar.gz
+exit
+(you should exit from node, not hadoop user. if needed, do sudo -i -u hadoop again)
+
+ssh team-15-nn
+
+vim ~/.profile
+
+*put in the end of the file:*
+*export HADOOP_HOME=/home/hadoop/hadoop-3.4.0*
+*export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64*
+*export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin*
+
+source ~/.profile
+
+cd hadoop-3.4.0/etc/hadoop
+vim hadoop-env.sh
+
+*put this line to the file between* 
+*‘# JAVA_HOME=/usr/java/testing hdfs dfs -ls* 
+*and*
+*‘#*
+*# Therefore, the vast majority (BUT NOT ALL!) of these defaults’* 
+*lines:*
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+vim core-site.xml 
+
+*put these lines to the file into configuration block:*
+*<configuration>*
+*    <property>*
+*        <name>fs.defaultFS</name>*
+*        <value>hdfs://team-15-nn:9000</value>* 
+*    </property>*
+*</configuration>*
+
+vim hdfs-site.xml
+
+*put these lines to the file into configuration block:*
+*<configuration>*
+*    <property>*
+*        <name>dfs.replication</name>*
+*        <value>3</value>*
+*    </property>*
+*</configuration>*
+
+vim workers
+
+*delete localhost from the file*
+*and put these lines to the file:*
+*team-15-nn*
+*team-15-dn-0*
+*team-15-dn-1*
+
+exit
+
+ssh team-15-dn-0
+wget -O .profile https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/.profile
+cd hadoop-3.4.0/etc/hadoop/
+wget -O hadoop-env.sh https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/hadoop-env.sh
+wget -O core-site.xml https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/core-site.xml
+wget -O hdfs-site.xml https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/hdfs-site.xml
+wget -O workers https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/workers
+
+exit
+(you should exit from node, not hadoop user. if needed, do sudo -i -u hadoop again)
+
+ssh team-15-dn-1
+wget -O .profile https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/.profile
+cd hadoop-3.4.0/etc/hadoop/
+wget -O hadoop-env.sh https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/hadoop-env.sh
+wget -O core-site.xml https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/core-site.xml
+wget -O hdfs-site.xml https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/hdfs-site.xml
+wget -O workers https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/workers
+
+exit
+(you should exit from node, not hadoop user. if needed, do sudo -i -u hadoop again)
+
+ssh team-15-nn
+
+cd hadoop-3.4.0
+bin/hdfs namenode -format
+sbin/start-dfs.sh
+
+check: jps
+you should have DataNode, NameNode, SecondaryNameNode, Jps
+
+exit (from node)
+
+cd /etc/nginx/sites-available
+sudo wget -O nn https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/nginx/sites-available/nn
+
+sudo ln -s /etc/nginx/sites-available/nn /etc/nginx/sites-enabled/nn
+sudo systemctl reload nginx
+
+check:
+176.109.91.17:9870
+should be working
+
+ssh team-15-nn
+sudo -i -u hadoop
+cd hadoop-3.4.0/etc/hadoop
+vim mapred-site.xml
+
+put these lines to the file into configuration block:
+<configuration>
+   <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.application.classpath</name>
+        <value>$HADOOP_HOME/share/hadoop/mapreduce/*: $HADOOP_HOME/share/hadoop/mapreduce/lib/*</value></value>
+    </property>
+</configuration>
+
+vim yarn-site.xml
+
+put these lines to the file into configuration block:
+<configuration>
+    <property> 
+        <name>yarn.nodemanager.aux-services</name> 
+        <value>mapreduce_shuffle</value> 
+    </property> 
+    <property> 
+        <name>yarn.nodemanager.env-whitelist</name> 
+        <value> JAVA_HOME, HADOOP_COMMON_HOME, HADOOP_HDFS_HOME, HADOOP_CONF_DIR, CLASSPATH_PREPEND_DISTCACHE, HADOOP_YARN_HOME, HADOOP_HOME, PATH, LANG, TZ, HADOOP_MAPRED_HOME</value> 
+    </property>
+</configuration>
+
+exit
+exit
+
+sudo -i -u hadoop
+ssh team-15-dn-0
+cd hadoop-3.4.0/etc/hadoop
+wget -O mapred-site.xml https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/mapred-site.xml
+wget -O yarn-site.xml https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/yarn-site.xml
+
+exit
+
+ssh team-15-dn-1
+cd hadoop-3.4.0/etc/hadoop
+wget -O mapred-site.xml
+https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/mapred-site.xml
+wget -O yarn-site.xml
+https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/yarn-site.xml
+
+exit
+sudo -i -u hadoop
+ssh team-15-nn
+cd hadoop-3.4.0
+
+sbin/start-yarn.sh
+mapred --daemon start historyserver
+
+exit 
+exit (from node and user)
+
+cd /etc/nginx/sites-available
+sudo wget -O ya https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/nginx/sites-available/ya
+sudo wget -O dh https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/nginx/sites-available/dh
+
+sudo ln -s /etc/nginx/sites-available/ya /etc/nginx/sites-enabled/ya
+sudo ln -s /etc/nginx/sites-available/dh /etc/nginx/sites-enabled/dh
+
+sudo systemctl reload nginx
+
+check:
+176.109.91.17:8088
+176.109.91.17:19888
+should be working
+
+ssh team-15-nn
+sudo apt install postgresql
+sudo -i -u postgres
+psql
+
+CREATE DATABASE metastore;
+CREATE USER hive with password 'hiveMegaPass';
+GRANT ALL PRIVILEGES ON DATABASE "metastore" to hive;
+ALTER DATABASE metastore OWNER to hive;
+\q
+exit (from user not node)
+
+sudo vim /etc/postgresql/16/main/postgresql.conf
+change line:
+from #listen_addresses = 'localhost'         # what IP address(es) to listen on;
+to listen_addresses = ‘team-15-nn'         # what IP address(es) to listen on;
+
+sudo vim /etc/postgresql/16/main/pg_hba.conf
+
+put this line to the file between 
+‘# IPv4 local connections:’
+and 
+‘host    all             all             127.0.0.1/32            scram-sha-256’ 
+lines:
+host    metastore       hive            192.168.1/62            password
+
+sudo systemctl restart postgresql
+
+check:
+sudo systemctl status postgresql
+should be working
+
+exit
+sudo apt install postgresql-client-16
+
+check:
+psql -h team-15-nn -p 5342 -U hive -W -d metastore
+should work
+
+sudo -i -u hadoop
+wget https://dlcdn.apache.org/hive/hive-4.0.1/apache-hive-4.0.1-bin.tar.gz
+tar -xvzf apache-hive-4.0.1-bin.tar.gz
+cd apache-hive-4.0.1-bin/lib/
+wget https://jdbc.postgresql.org/download/postgresql-42.7.4.jar
+cd ../conf/ 
+vim hive-site.xml
+
+put this lines to the file:
+<configuration> 
+    <property> 
+        <name>hive.server2.authentication</name> 
+        <value>NONE</value> 
+    </property> 
+    <property> 
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/user/hive/warehouse</value> 
+    </property> 
+    <property> 
+        <name>hive.server2.thrift.port </name> 
+        <value>5433</value> 
+        <description>TCP port number to listen on, default 10000</description> 
+    </property>
+    <property> 
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:postgresql://tmpl-nn:5432/metastore</value> 
+    </property> 
+    <property> 
+        <name>javax.jdo.option.ConnectionDriverName</name> 
+        <value>org.postgresql.Driver </value> 
+    </property> 
+    <property> 
+        <name>javax.jdo.option.ConnectionUserName</name> 
+        <value>hive</value> 
+    </property> 
+    <property> 
+        <name>javax.jdo.option.ConnectionPassword</name> 
+        <value>hiveMegaPass</value> 
+        </property> 
+</configuration>
+
+vim ~/.profile
+check if it is in the end of the file:
+export HADOOP_HOME=/home/hadoop/hadoop-3.4.0 
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export HIVE_HOME=/home/hadoop/apache-hive-4.0.1-bin 
+export HIVE_CONF_DIR=$HIVE_HOME/conf 
+export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib/* 
+export PATH=$PATH:$HIVE_HOME/bin
+
+source ~/.profile
+hive --version
+
+hdfs dfs -mkdir -p /user/hive/warehouse
+hdfs dfs -chmod g+w /tmp
+hdfs dfs -chmod g+w /user/hive/warehouse
+
+cd ../
+bin/schematool -dbType postgres -initSchema
+
+hive --hiveconf hive.server2.enable.doAs=false --hiveconf hive.security.authorization.enabled=false --service hiveserver
+
+beeline -u jdbc:hive2://team-15-jn:5433
+
+SHOW DATABASES;
+CREATE DATABASE test;
+DESCRIBE DATABASE test;
+
+CREATE TABLE IF NOT EXISTS test.houses (
+. . . . . . . . . . . > address string,
+. . . . . . . . . . . > gov_type string,
+. . . . . . . . . . . > building_type string,
+. . . . . . . . . . . > condition string,
+. . . . . . . . . . . > full_space string,
+. . . . . . . . . . . > living_space string,
+. . . . . . . . . . . > communal_type string,
+. . . . . . . . . . . > space_type string,
+. . . . . . . . . . . > demolition_date string,
+. . . . . . . . . . . > space_number string,
+. . . . . . . . . . . > room_number string,
+. . . . . . . . . . . > house_guid string,
+. . . . . . . . . . . > room_guid string)
+. . . . . . . . . . . > ROW FORMAT DELIMITED FIELDS TERMINATED BY '|';
+
+SHOW TABLES;
+DESCRIBE houses;
+
+hdfs dfs -mkdir -p /input
+hdfs dfs -chmod g+w /input
+hdfs dfs put moscow_reduced.csv /input
+hdfs fsck /input/moscow_reduced.csv
+head -10 moscow_reduced.csv
+
+LOAD DATA INPATH  '/input/moscow_reduced.csv' INTO TABLE test.houses;
+
+SELECT * FROM test.houses LIMIT 10;
+
+mapred --daemon stop historyserver
+sbin/stop-yarn.sh
+sbin/stop-dfs.sh
+
+check: jps
