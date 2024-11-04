@@ -42,7 +42,9 @@ ssh team-15-nn
 ```
 
 **repeat:**  
-sudo adduser hadoop  
+```bash
+sudo adduser hadoop
+```
 *password: 1234567890*  
 *full name: hadoop*  
 
@@ -156,18 +158,8 @@ vim .ssh/authorized_keys
 ```bash
 exit
 
-sudo -i -u hadoop 
-vim .ssh/authorized_keys
-```
-
-**put your keys to this file. you should have smth like:**  
-*ssh-ed25519 key-jn*  
-*ssh-ed25519 key-nn*  
-*ssh-ed25519 key-dn-0*  
-*ssh-ed25519 key-dn-1*  
-
-```bash
 ssh team-15-nn 
+sudo -i -u hadoop 
 vim .ssh/authorized_keys
 ```
 
@@ -237,6 +229,8 @@ source ~/.profile
 cd hadoop-3.4.0/etc/hadoop
 vim hadoop-env.sh
 ```
+
+## Part 2: change configs
 
 **put this line to the file between**  
 *‘# JAVA_HOME=/usr/java/testing hdfs dfs -ls*  
@@ -415,6 +409,8 @@ check:
 176.109.91.17:19888  
 should be working  
 
+## Part 3: data
+
 ```bash
 ssh team-15-nn
 sudo apt install postgresql
@@ -474,7 +470,7 @@ cd ../conf/
 vim hive-site.xml
 ```
 
-**put this lines to the file:**  
+**put these lines to the file:**  
 <configuration>  
     <property>  
         <name>hive.server2.authentication</name>  
@@ -539,37 +535,40 @@ SHOW DATABASES;
 CREATE DATABASE test;
 DESCRIBE DATABASE test;
 
-CREATE TABLE IF NOT EXISTS test.houses (
-. . . . . . . . . . . > address string,
-. . . . . . . . . . . > gov_type string,
-. . . . . . . . . . . > building_type string,
-. . . . . . . . . . . > condition string,
-. . . . . . . . . . . > full_space string,
-. . . . . . . . . . . > living_space string,
-. . . . . . . . . . . > communal_type string,
-. . . . . . . . . . . > space_type string,
-. . . . . . . . . . . > demolition_date string,
-. . . . . . . . . . . > space_number string,
-. . . . . . . . . . . > room_number string,
-. . . . . . . . . . . > house_guid string,
-. . . . . . . . . . . > room_guid string)
-. . . . . . . . . . . > ROW FORMAT DELIMITED FIELDS TERMINATED BY '|';
+CREATE TABLE IF NOT EXISTS test.sleep (
+    Person_ID INT,
+    Gender STRING,
+    Age INT,
+    Occupation STRING,
+    Sleep_Duration FLOAT,
+    Quality_of_Sleep INT,
+    Physical_Activity_Level INT,
+    Stress_Level INT,
+    BMI_Category STRING,
+    Blood_Pressure STRING,
+    Heart_Rate INT,
+    Daily_Steps INT,
+    Sleep_Disorder STRING
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|';
 
 SHOW TABLES;
-DESCRIBE houses;
+DESCRIBE sleep;
 
 hdfs dfs -mkdir -p /input
 hdfs dfs -chmod g+w /input
-hdfs dfs put moscow_reduced.csv /input
-hdfs fsck /input/moscow_reduced.csv
-head -10 moscow_reduced.csv
 
-LOAD DATA INPATH  '/input/moscow_reduced.csv' INTO TABLE test.houses;
+sudo wget -O Sleep_health_and_lifestyle_dataset.csv https://raw.githubusercontent.com/nevolinaa/big_data_hw/refs/heads/main/Sleep_health_and_lifestyle_dataset.csv
 
-SELECT * FROM test.houses LIMIT 10;
+hdfs dfs put Sleep_health_and_lifestyle_dataset.csv /input
+hdfs fsck /input/Sleep_health_and_lifestyle_dataset.csv
+head -10 /input/Sleep_health_and_lifestyle_dataset.csv
+
+LOAD DATA INPATH  /input/'Sleep_health_and_lifestyle_dataset.csv' INTO TABLE test.sleep;
+
+SELECT * FROM test.sleep LIMIT 10;
 
 mapred --daemon stop historyserver
 sbin/stop-yarn.sh
 sbin/stop-dfs.sh
 ```
-check: jps
