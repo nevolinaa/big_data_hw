@@ -462,9 +462,10 @@ should work
 
 ```bash
 sudo -i -u hadoop
-wget https://dlcdn.apache.org/hive/hive-4.0.1/apache-hive-4.0.1-bin.tar.gz
-tar -xvzf apache-hive-4.0.1-bin.tar.gz
-cd apache-hive-4.0.1-bin/lib/
+wget https://dlcdn.apache.org/hive/hive-4.0.0/apache-hive-4.0.0-bin.tar.gz  
+
+tar -xvzf apache-hive-4.0.0-bin.tar.gz
+cd apache-hive-4.0.0-bin/lib/
 wget https://jdbc.postgresql.org/download/postgresql-42.7.4.jar
 cd ../conf/ 
 vim hive-site.xml
@@ -511,7 +512,7 @@ vim ~/.profile
 export HADOOP_HOME=/home/hadoop/hadoop-3.4.0  
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64  
 export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin  
-export HIVE_HOME=/home/hadoop/apache-hive-4.0.1-bin  
+export HIVE_HOME=/home/hadoop/apache-hive-4.0.0-bin  
 export HIVE_CONF_DIR=$HIVE_HOME/conf  
 export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib/*  
 export PATH=$PATH:$HIVE_HOME/bin  
