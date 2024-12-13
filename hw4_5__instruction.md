@@ -67,7 +67,7 @@ df.write.saveAsTable('health_by_months', partitionBy='dt_month')
 spark.stop()
 ```
 
-## Part 2: Airflow and automatic repartition
+## Part 2: Automatic repartition
 ```bash
 vim perfect_flow.py
 ```
