@@ -61,7 +61,7 @@ df = df.filter((df.Sleep_Duration >= 6.0) & (df.Quality_of_Sleep > 4))
 df = df.withColumn("Sleep_Duration", round(col("Sleep_Duration")).cast("int"))
 
 # Transform data: drop the column where most of the values are none
-df_dropped = df.drop("Sleep_Disorder")
+df = df.drop("Sleep_Disorder")
 
 # Transform data: convert the date into months
 df = df.withColumn('dt_month', F.col('dt').substr(0,6))
@@ -130,7 +130,7 @@ def transform_data(_df):
   df = df.withColumn("Sleep_Duration", round(col("Sleep_Duration")).cast("int"))
   
   # drop the column where most of the values are none
-  df_dropped = df.drop("Sleep_Disorder")
+  df = df.drop("Sleep_Disorder")
   
   # convert the date into months
   df = df.withColumn('dt_month', F.col('dt').substr(0,6))
