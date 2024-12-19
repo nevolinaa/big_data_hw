@@ -53,6 +53,17 @@ dt = df.select('Date')
 # To check dates
 dt.show()
 
+# Transform data: there are outliers in the data, let's clean them up since it's only a few observations
+df = df.where(df.Daily_Steps >= 5000)
+df = df.filter((df.Sleep_Duration >= 6.0) & (df.Quality_of_Sleep > 4))
+
+# Transform data: convert the sleep length data in hours into integers and change data type
+df = df.withColumn("Sleep_Duration", round(col("Sleep_Duration")).cast("int"))
+
+# Transform data: drop the column where most of the values are none
+df_dropped = df.drop("Sleep_Disorder")
+
+# Transform data: convert the date into months
 df = df.withColumn('dt_month', F.col('dt').substr(0,6))
 
 # checks
@@ -111,7 +122,18 @@ def extract_data(spark):
 
 @task
 def transform_data(_df):
-  df = _df.withColumn('dt_month', F.col('dt').substr(0,6))
+  # there are outliers in the data, let's clean them up since it's only a few observations
+  df = _df.where(_df.Daily_Steps >= 5000)
+  df = df.filter((df.Sleep_Duration >= 6.0) & (df.Quality_of_Sleep > 4))
+  
+  # convert the sleep length data in hours into integers and change data type
+  df = df.withColumn("Sleep_Duration", round(col("Sleep_Duration")).cast("int"))
+  
+  # drop the column where most of the values are none
+  df_dropped = df.drop("Sleep_Disorder")
+  
+  # convert the date into months
+  df = df.withColumn('dt_month', F.col('dt').substr(0,6))
   df = df.repartition(3, 'dt_month')
 
   return df
