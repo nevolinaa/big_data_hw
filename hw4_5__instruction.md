@@ -82,7 +82,7 @@ spark.stop()
 
 ## Part 2: Automatic repartition
 ```bash
-vim perfect_flow.py
+vim prefect_flow.py
 ```
 
 **put this to the file:**
@@ -157,5 +157,5 @@ if __name__ == '__main__':
 ```
 
 ```bash
-python perfect_flow.py
+python prefect_flow.py
 ```
