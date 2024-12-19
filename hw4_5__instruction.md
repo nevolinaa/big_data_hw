@@ -1,5 +1,7 @@
 # Instructions for homework №4-5. Apache spark + yarn
 
+### To execute this instruction, the steps in instruction hw_1-3 must be completed
+
 *First, put data in '/input' folder*
 
 **Next, our goal is to store data and access it optimally. In addition, we want to do all this automatically. Our actions:**
